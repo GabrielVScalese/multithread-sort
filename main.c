@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <stdlib.h>
+#include <getopt.h>
+
+#define MAX_FILE_LINE_LENGTH 100
+#define INITIAL_INPUT_NUMBERS_QUANTITY 10
 
 // Tipos
 
@@ -10,10 +14,54 @@ typedef struct int_list
     int length;
 } int_list;
 
+typedef struct command_line_data
+{
+    int thread_number;
+    int *numbers;
+    int numbers_quantity;
+    char *output_file;
+} command_line_data;
+
 int thread_number;
 int group_length;
 
 // Funcoes uteis
+
+void print_new_line()
+{
+    printf("\n");
+}
+
+command_line_data *get_input_data(int argc, char *argv[])
+{
+    command_line_data *command_line_data = malloc(sizeof(command_line_data));
+    command_line_data->thread_number = atoi(argv[1]);
+
+    int numbers_size = INITIAL_INPUT_NUMBERS_QUANTITY; // Valor inicial
+    int numbers_count = 0;
+    command_line_data->numbers = malloc(sizeof(int) * numbers_size);
+
+    for (int i = 2; i < argc - 2; i++)
+    {
+        FILE *file = fopen(argv[i], "r");
+        char file_line[MAX_FILE_LINE_LENGTH];
+
+        if (numbers_count == numbers_size)
+            command_line_data->numbers = realloc(command_line_data->numbers, numbers_size * 2);
+
+        while (fgets(file_line, MAX_FILE_LINE_LENGTH, file))
+        {
+            int number;
+            sscanf(file_line, "%d", &number);
+            command_line_data->numbers[numbers_count++] = number;
+        }
+    }
+
+    command_line_data->numbers_quantity = numbers_count;
+    command_line_data->output_file = argv[argc - 1];
+
+    return command_line_data;
+}
 
 void print_numbers(int *numbers, int length)
 {
@@ -103,7 +151,7 @@ void *thread_func(void *arg)
     pthread_exit(NULL); // Verificar necessidade
 }
 
-int main()
+int main(int argc, char *argv[])
 {
     int numbers[16] = {4, 3, 6, 9, 1, 7, 45, 21, 67, 13, 43, 12, 89, 2, 3, 0};
 
@@ -125,7 +173,7 @@ int main()
     {
         printf("-> Agrupamento %d: ", (i + 1));
         print_numbers(groups[i], group_length);
-        printf("\n");
+        print_new_line();
     }
 
     int *sorted_numbers = merge_groups(groups);
@@ -134,7 +182,7 @@ int main()
     print_numbers(numbers, 16);
     printf("\nDepois da ordenacao: ");
     print_numbers(sorted_numbers, 16);
-    printf("\n");
+    print_new_line();
 
     return 0;
 }
