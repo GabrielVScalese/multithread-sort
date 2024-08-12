@@ -8,11 +8,11 @@
 
 // Tipos
 
-typedef struct int_list
+typedef struct int_group
 {
     int *numbers;
     int length;
-} int_list;
+} int_group;
 
 typedef struct command_line_data
 {
@@ -21,9 +21,6 @@ typedef struct command_line_data
     int numbers_quantity;
     char *output_file;
 } command_line_data;
-
-int thread_number;
-int group_length;
 
 // Funcoes uteis
 
@@ -69,22 +66,19 @@ void print_numbers(int *numbers, int length)
         printf("%d ", numbers[i]);
 }
 
-int **create_matrix(int row, int column)
+int_group **divide_into_groups(int *numbers, int group_quantity, int group_length)
 {
-    int **matrix = (int **)malloc(sizeof(int *) * row);
-    for (int i = 0; i < row; i++)
-        matrix[i] = (int *)malloc(sizeof(int) * column);
+    int_group **groups = malloc(sizeof(int_group *) * group_quantity);
 
-    return matrix;
-}
+    for (int i = 0; i < group_quantity; i++)
+    {
+        groups[i] = malloc(sizeof(int_group));
+        groups[i]->length = group_length;
+        groups[i]->numbers = malloc(sizeof(int) * group_length);
 
-int **divide_into_groups(int *numbers)
-{
-    int **groups = create_matrix(thread_number, group_length);
-
-    for (int i = 0; i < thread_number; i++)
-        for (int k = 0; k < group_length; k++)
-            groups[i][k] = numbers[k + i * group_length];
+        for (int j = 0; j < group_length; j++)
+            groups[i]->numbers[j] = numbers[j + i * group_length];
+    }
 
     return groups;
 }
@@ -103,63 +97,65 @@ void bubble_sort(int *numbers, int length)
             }
 }
 
-int_list *merge_two_groups(int *a, int a_length, int *b, int b_length)
+int_group *merge_two_groups(int_group *a, int_group *b)
 {
-    int result_length = (a_length + b_length);
+    int result_length = (a->length + b->length);
     int *result = malloc(sizeof(int) * result_length);
+
     int a_index = 0, b_index = 0, result_index = 0;
-    while (a_index < a_length && b_index < b_length)
+    while (a_index < a->length && b_index < b->length)
     {
-        if (a[a_index] <= b[b_index])
-            result[result_index++] = a[a_index++];
+        if (a->numbers[a_index] <= b->numbers[b_index])
+            result[result_index++] = a->numbers[a_index++];
         else
-            result[result_index++] = b[b_index++];
+            result[result_index++] = b->numbers[b_index++];
     }
 
-    while (a_index < a_length)
-        result[result_index++] = a[a_index++];
+    while (a_index < a->length)
+        result[result_index++] = a->numbers[a_index++];
 
-    while (b_index < b_length)
-        result[result_index++] = b[b_index++];
+    while (b_index < b->length)
+        result[result_index++] = b->numbers[b_index++];
 
-    int_list *list = malloc(sizeof(int_list));
-    list->numbers = result;
-    list->length = result_length;
+    int_group *group = malloc(sizeof(int_group));
+    group->numbers = result;
+    group->length = result_length;
 
-    return list;
+    return group;
 }
 
-int *merge_groups(int **groups)
+int_group *merge_groups(int_group **groups, int group_quantity, int group_length)
 {
-    int_list *temp_list = malloc(sizeof(int_list));
-    temp_list->numbers = groups[0];
-    temp_list->length = group_length;
+    int_group *temp_group = malloc(sizeof(int_group));
+    temp_group->numbers = groups[0]->numbers;
+    temp_group->length = group_length;
 
-    for (int i = 1; i < thread_number; i++)
-        temp_list = merge_two_groups(temp_list->numbers, temp_list->length, groups[i], group_length);
+    for (int i = 1; i < group_quantity; i++)
+        temp_group = merge_two_groups(temp_group, groups[i]);
 
-    return temp_list->numbers;
+    return temp_group;
 }
 
 // Funcoes para thread
 
 void *thread_func(void *arg)
 {
-    int *numbers = (int *)arg;
-    bubble_sort(numbers, group_length);
+    int_group *group = (int_group *)arg;
+    bubble_sort(group->numbers, group->length);
 
     pthread_exit(NULL); // Verificar necessidade
 }
 
 int main(int argc, char *argv[])
 {
-    int numbers[16] = {4, 3, 6, 9, 1, 7, 45, 21, 67, 13, 43, 12, 89, 2, 3, 0};
+    command_line_data *command_line_data = get_input_data(argc, argv);
+    int *numbers = command_line_data->numbers;
+    int numbers_quantity = command_line_data->numbers_quantity;
+    int thread_number = command_line_data->thread_number;
+    int group_length = numbers_quantity / thread_number;
 
-    thread_number = 4;
-    group_length = 16 / thread_number;
     pthread_t threads[thread_number];
-
-    int **groups = divide_into_groups(numbers);
+    int_group **groups = divide_into_groups(numbers, thread_number, group_length);
 
     for (int i = 0; i < thread_number; i++)
         pthread_create(&threads[i], NULL, thread_func, groups[i]);
@@ -172,16 +168,16 @@ int main(int argc, char *argv[])
     for (int i = 0; i < thread_number; i++)
     {
         printf("-> Agrupamento %d: ", (i + 1));
-        print_numbers(groups[i], group_length);
+        print_numbers(groups[i]->numbers, group_length);
         print_new_line();
     }
 
-    int *sorted_numbers = merge_groups(groups);
+    int_group *sorted_all_groups = merge_groups(groups, thread_number, group_length);
 
     printf("Antes da ordenacao: ");
-    print_numbers(numbers, 16);
+    print_numbers(numbers, numbers_quantity);
     printf("\nDepois da ordenacao: ");
-    print_numbers(sorted_numbers, 16);
+    print_numbers(sorted_all_groups->numbers, sorted_all_groups->length);
     print_new_line();
 
     return 0;
