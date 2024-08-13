@@ -34,22 +34,27 @@ command_line_data *get_input_data(int argc, char *argv[])
     command_line_data *command_line_data = malloc(sizeof(command_line_data));
     command_line_data->thread_number = atoi(argv[1]);
 
-    int numbers_size = INITIAL_INPUT_NUMBERS_QUANTITY; // Valor inicial
+    int numbers_list_length = INITIAL_INPUT_NUMBERS_QUANTITY; // Valor inicial
     int numbers_count = 0;
-    command_line_data->numbers = malloc(sizeof(int) * numbers_size);
+    command_line_data->numbers = malloc(sizeof(int) * numbers_list_length);
+
+    FILE *file;
 
     for (int i = 2; i < argc - 2; i++)
     {
-        FILE *file = fopen(argv[i], "r");
+        file = fopen(argv[i], "r");
         char file_line[MAX_FILE_LINE_LENGTH];
-
-        if (numbers_count == numbers_size)
-            command_line_data->numbers = realloc(command_line_data->numbers, numbers_size * 2);
 
         while (fgets(file_line, MAX_FILE_LINE_LENGTH, file))
         {
-            int number;
-            sscanf(file_line, "%d", &number);
+            int number = atoi(file_line);
+
+            if (numbers_count == numbers_list_length)
+            {
+                numbers_list_length *= 1.5;
+                command_line_data->numbers = realloc(command_line_data->numbers, sizeof(int) * numbers_list_length);
+            }
+
             command_line_data->numbers[numbers_count++] = number;
         }
     }
