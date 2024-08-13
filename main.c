@@ -57,12 +57,26 @@ command_line_data *get_input_data(int argc, char *argv[])
 
             command_line_data->numbers[numbers_count++] = number;
         }
+
+        fclose(file);
     }
 
     command_line_data->numbers_quantity = numbers_count;
     command_line_data->output_file = argv[argc - 1];
 
     return command_line_data;
+}
+
+void write_output_data(int_group *group, char *output_file)
+{
+    FILE *file = fopen(output_file, "w");
+    for (int i = 0; i < group->length; i++)
+        if (i != group->length - 1)
+            fprintf(file, "%d\n", group->numbers[i]);
+        else
+            fprintf(file, "%d", group->numbers[i]);
+
+    fclose(file);
 }
 
 void print_numbers(int *numbers, int length)
@@ -168,22 +182,8 @@ int main(int argc, char *argv[])
     for (int i = 0; i < thread_number; i++)
         pthread_join(threads[i], NULL);
 
-    printf("Agrupamentos obtidos apos resolucao de threads:\n");
-
-    for (int i = 0; i < thread_number; i++)
-    {
-        printf("-> Agrupamento %d: ", (i + 1));
-        print_numbers(groups[i]->numbers, group_length);
-        print_new_line();
-    }
-
     int_group *sorted_all_groups = merge_groups(groups, thread_number, group_length);
-
-    printf("Antes da ordenacao: ");
-    print_numbers(numbers, numbers_quantity);
-    printf("\nDepois da ordenacao: ");
-    print_numbers(sorted_all_groups->numbers, sorted_all_groups->length);
-    print_new_line();
+    write_output_data(sorted_all_groups, command_line_data->output_file);
 
     return 0;
 }
