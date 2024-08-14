@@ -111,6 +111,35 @@ int_group **divide_into_groups(int *numbers, int group_quantity, int group_lengt
 
 // Funcoes para ordenacao
 
+void quick_sort(int *numbers, int start_pos, int end_pos)
+{
+    int pivot = numbers[start_pos];
+    int left = start_pos;
+    int right = end_pos;
+
+    while (left <= right)
+    {
+        while (numbers[left] < pivot)
+            left++;
+        while (numbers[right] > pivot)
+            right--;
+
+        if (left <= right)
+        {
+            int temp = numbers[left];
+            numbers[left] = numbers[right];
+            numbers[right] = temp;
+            left++;
+            right--;
+        }
+    }
+
+    if (start_pos < right)
+        quick_sort(numbers, start_pos, right);
+    if (left < end_pos)
+        quick_sort(numbers, left, end_pos);
+}
+
 void bubble_sort(int *numbers, int length)
 {
     for (int i = length - 1; i > 0; i--)
@@ -170,7 +199,8 @@ void *thread_func(void *arg)
     clock_t time;
 
     time = clock();
-    bubble_sort(thread_data->group->numbers, thread_data->group->length);
+    // bubble_sort(thread_data->group->numbers, thread_data->group->length);
+    quick_sort(thread_data->group->numbers, 0, thread_data->group->length - 1);
     time = clock() - time;
 
     double thread_time = ((double)time / CLOCKS_PER_SEC);
