@@ -8,20 +8,21 @@ while True:
     print("Criando um arquivo...\n")
     while True:
         try:
-            numberQnt = int(input("Digite a quantidade de números a serem impressos no arquivo: "))
+            file_name = input("Digite o nome do arquivo de saída: ")
+            number_qnt = int(input("Digite a quantidade de números a serem impressos no arquivo: "))
             break
         except:
             print("Digite um valor numérico!")
             
-    file = open(f"arq{i}.txt", "w")
-    for j in range(1, numberQnt + 1):
-        if j == numberQnt:
+    file = open(f"{file_name}.txt", "w")
+    for j in range(1, number_qnt + 1):
+        if j == number_qnt:
              file.write(str(random.randint(1, 100)))
         else:
             file.write(str(random.randint(1, 100)) + "\n")
     
     file.close()
-    print(f"Arquivo arq{i}.txt criado com sucesso!")
+    print(f"Arquivo {file_name}.txt criado com sucesso!")
 
     while True:
         try:
