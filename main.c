@@ -2,6 +2,7 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <getopt.h>
+#include <time.h>
 
 #define MAX_FILE_LINE_LENGTH 100
 #define INITIAL_INPUT_NUMBERS_QUANTITY 10
@@ -13,6 +14,12 @@ typedef struct int_group
     int *numbers;
     int length;
 } int_group;
+
+typedef struct thread_data
+{
+    int thread_number;
+    int_group *group;
+} thread_data;
 
 typedef struct command_line_data
 {
@@ -159,10 +166,16 @@ int_group *merge_groups(int_group **groups, int group_quantity, int group_length
 
 void *thread_func(void *arg)
 {
-    int_group *group = (int_group *)arg;
-    bubble_sort(group->numbers, group->length);
+    thread_data *thread_data = arg;
+    clock_t time;
 
-    pthread_exit(NULL); // Verificar necessidade
+    time = clock();
+    bubble_sort(thread_data->group->numbers, thread_data->group->length);
+    time = clock() - time;
+
+    double thread_time = ((double)time / CLOCKS_PER_SEC);
+    printf("Tempo de execucao do Thread %i: %f", thread_data->thread_number, thread_time);
+    print_new_line();
 }
 
 int main(int argc, char *argv[])
@@ -177,7 +190,12 @@ int main(int argc, char *argv[])
     int_group **groups = divide_into_groups(numbers, thread_number, group_length);
 
     for (int i = 0; i < thread_number; i++)
-        pthread_create(&threads[i], NULL, thread_func, groups[i]);
+    {
+        thread_data *thread_data = malloc(sizeof(thread_data));
+        thread_data->thread_number = i;
+        thread_data->group = groups[i];
+        pthread_create(&threads[i], NULL, thread_func, thread_data);
+    }
 
     for (int i = 0; i < thread_number; i++)
         pthread_join(threads[i], NULL);
