@@ -2,7 +2,6 @@
 #define IO_UTILS_H
 
 #include "../include/int_group.h"
-#define INITIAL_NUMBERS_LIST_LENGTH 10
 #define MAX_FILE_LINE_LENGTH 100
 
 typedef struct input_data {

@@ -11,25 +11,25 @@ typedef struct thread_data {
 } thread_data;
 
 void *thread_func(void *arg) {
-    thread_data *thread_data = arg;
-    clock_t time;
+    const thread_data *thread_data = arg;
 
-    time = clock();
+    clock_t time = clock();
     sort_group(thread_data->group);
     time = clock() - time;
 
-    double thread_time = ((double) time / CLOCKS_PER_SEC);
+    const double thread_time = ((double) time / CLOCKS_PER_SEC);
     printf("Tempo de execucao do Thread %i: %f segundos.", thread_data->thread_number, thread_time);
     print_new_line();
+    pthread_exit(NULL);
 }
 
 int main(int argc, char *argv[]) {
-    input_data *input_data = get_input_data(argc, argv);
-    int *numbers = input_data->numbers;
-    int numbers_quantity = input_data->numbers_quantity;
-    int thread_number = input_data->thread_number;
+    const input_data *input_data = get_input_data(argc, argv);
+    const int *numbers = input_data->numbers;
+    const int numbers_quantity = input_data->numbers_quantity;
+    const int thread_number = input_data->thread_number;
     char *output_file = input_data->output_file;
-    int group_length = numbers_quantity / thread_number;
+    const int group_length = numbers_quantity / thread_number;
 
     pthread_t threads[thread_number];
     thread_data **thread_datas = malloc(sizeof(thread_data *) * thread_number);
@@ -47,8 +47,8 @@ int main(int argc, char *argv[]) {
         pthread_join(threads[i], NULL);
 
     time = clock() - time;
-    double all_threads_time = (double) time / CLOCKS_PER_SEC;
-    printf("Tempo total de execução: %f segundos.", all_threads_time);
+    const double all_threads_time = (double) time / CLOCKS_PER_SEC;
+    printf("Tempo total de execucao: %f segundos.", all_threads_time);
     print_new_line();
 
     int_group *sorted_all_groups = merge_groups(groups, thread_number);

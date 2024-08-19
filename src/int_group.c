@@ -1,5 +1,5 @@
-#include "../include/int_group.h"
 #include <stdlib.h>
+#include "../include/int_group.h"
 
 int_group **divide_into_groups(int *numbers, int group_quantity, int group_length) {
     int_group **groups = malloc(sizeof(int_group *) * group_quantity);
@@ -16,7 +16,7 @@ int_group **divide_into_groups(int *numbers, int group_quantity, int group_lengt
 }
 
 int_group *merge_two_groups(int_group *a, int_group *b) {
-    int result_length = (a->length + b->length);
+    const int result_length = (a->length + b->length);
     int *result = malloc(sizeof(int) * result_length);
 
     int a_index = 0, b_index = 0, result_index = 0;
@@ -52,7 +52,7 @@ int_group *merge_groups(int_group **groups, int group_quantity) {
 }
 
 void quick_sort(int_group *group, int start_pos, int end_pos) {
-    int pivot = group->numbers[start_pos];
+    const int pivot = group->numbers[start_pos];
     int left = start_pos;
     int right = end_pos;
 
@@ -63,7 +63,7 @@ void quick_sort(int_group *group, int start_pos, int end_pos) {
             right--;
 
         if (left <= right) {
-            int temp = group->numbers[left];
+            const int temp = group->numbers[left];
             group->numbers[left] = group->numbers[right];
             group->numbers[right] = temp;
             left++;

@@ -3,6 +3,8 @@
 #include "../include/io_utils.h"
 #include "../include/int_group.h"
 
+#define INITIAL_NUMBERS_LIST_LENGTH 10
+
 input_data *get_input_data(int argc, char *argv[]) {
     input_data *input_data = malloc(sizeof(input_data));
     input_data->thread_number = atoi(argv[1]);
@@ -11,13 +13,12 @@ input_data *get_input_data(int argc, char *argv[]) {
     int numbers_count = 0;
     input_data->numbers = malloc(sizeof(int) * numbers_list_length);
 
-    FILE *file;
     for (int i = 2; i < argc - 2; i++) {
-        file = fopen(argv[i], "r");
+        FILE *file = fopen(argv[i], "r");
         char file_line[MAX_FILE_LINE_LENGTH];
 
         while (fgets(file_line, MAX_FILE_LINE_LENGTH, file)) {
-            int number = atoi(file_line);
+            const int number = atoi(file_line);
 
             if (numbers_count == numbers_list_length) {
                 numbers_list_length *= 1.5;
