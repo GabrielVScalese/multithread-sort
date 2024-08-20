@@ -1,7 +1,7 @@
 import os
 import random
 
-i = 1
+# Script para escrever X (numero definido pelo usuario) inteiros aleatorios (de 1 ate 100) num arquivo texto
 
 while True:
     os.system("clear")
@@ -13,14 +13,14 @@ while True:
             break
         except:
             print("Digite um valor numérico!")
-            
+
     file = open(f"{file_name}.txt", "w")
     for j in range(1, number_qnt + 1):
         if j == number_qnt:
-             file.write(str(random.randint(1, 100)))
+            file.write(str(random.randint(1, 100)))
         else:
             file.write(str(random.randint(1, 100)) + "\n")
-    
+
     file.close()
     print(f"Arquivo {file_name}.txt criado com sucesso!")
 
@@ -40,5 +40,3 @@ while True:
 
     if option == 2:
         break
-                
-    i += 1
