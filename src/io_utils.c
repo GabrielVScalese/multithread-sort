@@ -3,8 +3,6 @@
 #include "../include/io_utils.h"
 #include "../include/int_group.h"
 
-#define INITIAL_NUMBERS_LIST_LENGTH 10
-
 input_data *get_input_data(int argc, char *argv[]) {
     input_data *input_data = malloc(sizeof(input_data));
     input_data->thread_number = atoi(argv[1]);
@@ -21,7 +19,7 @@ input_data *get_input_data(int argc, char *argv[]) {
             const int number = atoi(file_line);
 
             if (numbers_count == numbers_list_length) {
-                numbers_list_length *= 1.5;
+                numbers_list_length *= RESIZE_THRESHOLD;
                 input_data->numbers = realloc(input_data->numbers, sizeof(int) * numbers_list_length);
             }
 
@@ -46,11 +44,6 @@ void write_output_data(int_group *group, char *output_file) {
             fprintf(file, "%d", group->numbers[i]);
 
     fclose(file);
-}
-
-void print_numbers(int *numbers, int length) {
-    for (int i = 0; i < length; i++)
-        printf("%d ", numbers[i]);
 }
 
 void print_new_line() {

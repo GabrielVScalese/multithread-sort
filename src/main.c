@@ -5,11 +5,19 @@
 #include "../include/int_group.h"
 #include "../include/io_utils.h"
 
+/**
+ * Estrutura para armazenar informacoes relevantes de uma thread: numero da thread e grupo de inteiros a ser ordenado
+ */
 typedef struct thread_data {
     int thread_number;
     int_group *group;
 } thread_data;
 
+/**
+ * Cada thread devera ordenar um grupo de inteiros e calcular/printar tempo gasto para isso
+ * @param arg grupo de inteiros a ser ordenado
+ * @return nao ha retorno
+ */
 void *thread_func(void *arg) {
     const thread_data *thread_data = arg;
 
