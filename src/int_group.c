@@ -16,7 +16,7 @@ int_group **divide_into_groups(int *numbers, int group_quantity, int group_lengt
 }
 
 int_group *merge_two_groups(int_group *a, int_group *b) {
-    const int result_length = (a->length + b->length);
+    int result_length = (a->length + b->length);
     int *result = malloc(sizeof(int) * result_length);
 
     int a_index = 0, b_index = 0, result_index = 0;
@@ -52,7 +52,7 @@ int_group *merge_groups(int_group **groups, int group_quantity) {
 }
 
 void quick_sort(int_group *group, int start_pos, int end_pos) {
-    const int pivot = group->numbers[start_pos];
+    int pivot = group->numbers[start_pos];
     int left = start_pos;
     int right = end_pos;
 
@@ -63,7 +63,7 @@ void quick_sort(int_group *group, int start_pos, int end_pos) {
             right--;
 
         if (left <= right) {
-            const int temp = group->numbers[left];
+            int temp = group->numbers[left];
             group->numbers[left] = group->numbers[right];
             group->numbers[right] = temp;
             left++;

@@ -16,7 +16,7 @@ input_data *get_input_data(int argc, char *argv[]) {
         char file_line[MAX_FILE_LINE_LENGTH];
 
         while (fgets(file_line, MAX_FILE_LINE_LENGTH, file)) {
-            const int number = atoi(file_line);
+            int number = atoi(file_line);
 
             if (numbers_count == numbers_list_length) {
                 numbers_list_length *= RESIZE_THRESHOLD;
