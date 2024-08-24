@@ -1,3 +1,6 @@
 /cmake-build-debug
 /.idea
 /.vscode
+*.txt
+*.o
+program
