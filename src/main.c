@@ -1,65 +1,67 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 #include "../include/int_group.h"
 #include "../include/io_utils.h"
+#include "../include/thread_utils.h"
 
 /**
- * Estrutura para armazenar informacoes relevantes de uma thread: numero da thread e grupo de inteiros a ser ordenado
- */
-typedef struct thread_data {
-    int thread_number;
-    int_group *group;
-} thread_data;
-
-/**
- * Cada thread devera ordenar um grupo de inteiros e calcular/printar tempo gasto para isso
- * @param arg grupo de inteiros a ser ordenado
+ * Cada thread devera ler numeros inteiros de um certo numero de arquivos, ordena-los num grupo de inteiros e calcular/printar tempo gasto para isso
+ * @param arg dados sobre numero de thread, grupo de inteiros a ser composto,
  * @return nao ha retorno
  */
 void *thread_func(void *arg) {
     thread_data *thread_data = arg;
 
     clock_t time = clock();
+    thread_data->group = malloc(sizeof(int_group));
+    thread_data->group->numbers = malloc(sizeof(int) * INITIAL_GROUP_LENGTH);
+    thread_data->group->length = 0;
+
+    for (int i = 0; i < thread_data->files_quantity; i++)
+        read_numbers_from_file(thread_data->file_names[i], thread_data->group);
+
     sort_group(thread_data->group);
     time = clock() - time;
 
     double thread_time = ((double) time / CLOCKS_PER_SEC);
-    printf("Tempo de execucao do Thread %i: %f segundos.", thread_data->thread_number, thread_time);
-    print_new_line();
+    printf("Tempo de execucao do Thread %i: %f segundos.\n", thread_data->thread_number, thread_time);
     pthread_exit(NULL);
 }
 
 int main(int argc, char *argv[]) {
     input_data *input_data = get_input_data(argc, argv);
-    int *numbers = input_data->numbers;
-    int numbers_quantity = input_data->numbers_quantity;
-    int thread_number = input_data->thread_number;
     char *output_file = input_data->output_file;
-    int group_length = numbers_quantity / thread_number;
 
-    pthread_t threads[thread_number];
-    thread_data **thread_datas = malloc(sizeof(thread_data *) * thread_number);
-    int_group **groups = divide_into_groups(numbers, thread_number, group_length);
+    int threads_to_create_quantity;
+    if (input_data->files_quantity < input_data->thread_quantity)
+        threads_to_create_quantity = input_data->files_quantity;
+    else
+        threads_to_create_quantity = input_data->thread_quantity;
+
+    thread_data **thread_datas = create_thread_datas(input_data->files_quantity, input_data->file_names,
+                                                     threads_to_create_quantity);
+
+    pthread_t threads[threads_to_create_quantity];
 
     clock_t time = clock();
-    for (int i = 0; i < thread_number; i++) {
-        thread_datas[i] = malloc(sizeof(thread_data));
-        thread_datas[i]->thread_number = i;
-        thread_datas[i]->group = groups[i];
+    for (int i = 0; i < threads_to_create_quantity; i++)
         pthread_create(&threads[i], NULL, thread_func, thread_datas[i]);
-    }
 
-    for (int i = 0; i < thread_number; i++)
+    for (int i = 0; i < threads_to_create_quantity; i++)
         pthread_join(threads[i], NULL);
-
     time = clock() - time;
-    double all_threads_time = (double) time / CLOCKS_PER_SEC;
-    printf("Tempo total de execucao: %f segundos.", all_threads_time);
-    print_new_line();
 
-    int_group *sorted_all_groups = merge_groups(groups, thread_number);
+    double all_threads_time = (double) time / CLOCKS_PER_SEC;
+    printf("Tempo total de execucao: %f segundos.\n", all_threads_time);
+
+    int_group **joined_thread_groups = malloc(sizeof(int_group *) * threads_to_create_quantity);
+    for (int i = 0; i < threads_to_create_quantity; i++)
+        joined_thread_groups[i] = thread_datas[i]->group;
+
+    int_group *sorted_all_groups = merge_groups(joined_thread_groups, threads_to_create_quantity);
     write_output_data(sorted_all_groups, output_file);
 
     return 0;

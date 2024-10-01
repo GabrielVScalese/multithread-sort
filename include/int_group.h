@@ -10,15 +10,6 @@ typedef struct int_group {
 } int_group;
 
 /**
- * Divide um vetor de inteiros em grupos de inteiros menores (sem ordenacao)
- * @param numbers numeros a serem divididos em grupos de inteiros menores
- * @param group_quantity quantidade de grupos a serem criados
- * @param group_length tamanho do grupo a ser criado
- * @return vetor de grupos de inteiros
- */
-int_group **divide_into_groups(int *numbers, int group_quantity, int group_length);
-
-/**
  * Mescla dois grupos de inteiros ordenados de forma a obter um grupo ordenado
  * @param a grupo de inteiros ordenados (crescente)
  * @param b grupo de inteiros ordenados (crescente)

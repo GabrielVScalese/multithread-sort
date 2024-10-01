@@ -1,20 +1,6 @@
 #include <stdlib.h>
 #include "../include/int_group.h"
 
-int_group **divide_into_groups(int *numbers, int group_quantity, int group_length) {
-    int_group **groups = malloc(sizeof(int_group *) * group_quantity);
-    for (int i = 0; i < group_quantity; i++) {
-        groups[i] = malloc(sizeof(int_group));
-        groups[i]->length = group_length;
-        groups[i]->numbers = malloc(sizeof(int) * group_length);
-
-        for (int j = 0; j < group_length; j++)
-            groups[i]->numbers[j] = numbers[j + i * group_length];
-    }
-
-    return groups;
-}
-
 int_group *merge_two_groups(int_group *a, int_group *b) {
     int result_length = (a->length + b->length);
     int *result = malloc(sizeof(int) * result_length);
