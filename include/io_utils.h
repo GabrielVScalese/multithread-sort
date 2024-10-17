@@ -48,6 +48,11 @@ input_data *get_input_data(int argc, char *argv[]);
  */
 void write_output_data(int_group *group, char *output_file);
 
+/**
+* Le os numeros inteiros de um arquivo, inserindo no grupo de inteiros especificado no parametro
+* @param file_name nome do arquivo a ser lido
+* @param group grupo de inteiros
+*/
 void read_numbers_from_file(char *file_name, int_group *group);
 
 #endif

@@ -2,6 +2,7 @@
 #define THREAD_UTILS_H
 
 #include "int_group.h"
+
 /**
  * Numero inicial do tamanho do array de nomes de arquivos
  */

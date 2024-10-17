@@ -9,7 +9,7 @@
 
 /**
  * Cada thread devera ler numeros inteiros de um certo numero de arquivos, ordena-los num grupo de inteiros e calcular/printar tempo gasto para isso
- * @param arg dados sobre numero de thread, grupo de inteiros a ser composto,
+ * @param arg dados sobre numero de threads, quantidade de arquivos a serem lidos, nomes de arquivos a serem lidos e arquivo de saida
  * @return nao ha retorno
  */
 void *thread_func(void *arg) {
