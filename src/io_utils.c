@@ -6,13 +6,25 @@
 
 input_data *get_input_data(int argc, char *argv[]) {
     input_data *input_data = malloc(sizeof(input_data));
+    if (!input_data) {
+        printf("Erro: alocacao de memoria (thread_data)\n");
+        exit(EXIT_FAILURE);
+    }
     input_data->thread_quantity = atoi(argv[1]);
 
     int files_count = 0;
     input_data->file_names = malloc(sizeof(char *) * (argc - 4));
+    if (!input_data->file_names) {
+        printf("Erro: alocacao de memoria (thread_data->file_names)\n");
+        exit(EXIT_FAILURE);
+    }
 
     for (int i = 2; i < argc - 2; i++) {
         input_data->file_names[files_count] = malloc(sizeof(char) * FILE_NAME_LENGTH);
+        if (!input_data->file_names[files_count]) {
+            printf("Erro: alocacao de memoria (thread_data->file_names[%d])\n", files_count);
+            exit(EXIT_FAILURE);
+        }
         strcpy(input_data->file_names[files_count++], argv[i]);
     }
 
@@ -39,6 +51,10 @@ void read_numbers_from_file(char *file_name, int_group *group) {
         if (group->length == numbers_list_length) {
             numbers_list_length *= RESIZE_THRESHOLD;
             group->numbers = realloc(group->numbers, sizeof(int) * numbers_list_length);
+            if (!group->numbers) {
+                printf("Erro: alocacao de memoria (group->numbers)\n");
+                exit(EXIT_FAILURE);
+            }
         }
 
         group->numbers[group->length] = number;
