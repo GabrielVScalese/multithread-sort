@@ -39,7 +39,7 @@ thread_data **create_thread_datas(int files_quantity, char **file_names, int thr
                 exit(EXIT_FAILURE);
             }
         }
-
+        
         thread_datas[i]->file_names[thread_datas[i]->files_quantity] = malloc(sizeof(char) * FILE_NAME_LENGTH);
         if(!thread_datas[i]->file_names[thread_datas[i]->files_quantity]) {
             printf("Erro: alocacao de memoria (thread_data[%d]->file_names[thread_datas[%d]->files_quantity])\n", i, i);

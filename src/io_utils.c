@@ -13,6 +13,13 @@ input_data *get_input_data(int argc, char *argv[]) {
     }
     input_data->thread_quantity = atoi(argv[1]);
 
+    if (input_data->thread_quantity != 2 &&
+        input_data->thread_quantity != 4 &&
+        input_data->thread_quantity != 8) {
+        printf("Capacidade de threads incorreta!\n");
+        exit(EXIT_FAILURE);
+    }
+
     int files_count = 0;
     input_data->file_names = malloc(sizeof(char *) * (argc - 4));
     if (!input_data->file_names) {
@@ -44,6 +51,7 @@ void read_numbers_from_file(char *file_name, int_group *group) {
     }
 
     char file_line[MAX_FILE_LINE_LENGTH];
+    
     while (fgets(file_line, MAX_FILE_LINE_LENGTH, file)) {
         int number = atoi(file_line);
 
