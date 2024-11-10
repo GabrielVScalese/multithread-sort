@@ -6,7 +6,6 @@
 thread_data **create_thread_datas(int files_quantity, char **file_names, int thread_quantity) {
     thread_data **thread_datas = malloc(sizeof(thread_data *) * thread_quantity);
 
-    int file_names_array_length = INITIAL_FILE_NAMES_ARRAY_LENGTH;
     for (int j = 0, i = 0; j < files_quantity; j++, i++) {
         if (i == thread_quantity)
             i = 0;
@@ -18,11 +17,9 @@ thread_data **create_thread_datas(int files_quantity, char **file_names, int thr
             thread_datas[i]->files_quantity = 0;
         }
 
-        if (thread_datas[i]->files_quantity == file_names_array_length) {
-            file_names_array_length = thread_datas[i]->files_quantity + 1;
+        if (sizeof(thread_datas[i]->file_names) < sizeof(char *) * thread_datas[i]->files_quantity + 1)
             thread_datas[i]->file_names = realloc(thread_datas[i]->file_names,
-                                                  sizeof(char *) * file_names_array_length);
-        }
+                                                  sizeof(char *) * (thread_datas[i]->files_quantity + 1));
 
         thread_datas[i]->file_names[thread_datas[i]->files_quantity] = malloc(sizeof(char) * FILE_NAME_LENGTH);
         strcpy(thread_datas[i]->file_names[thread_datas[i]->files_quantity], file_names[j]);
