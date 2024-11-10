@@ -14,8 +14,6 @@
  */
 void *thread_func(void *arg) {
     thread_data *thread_data = arg;
-
-    clock_t time = clock();
     thread_data->group = malloc(sizeof(int_group));
     thread_data->group->numbers = malloc(sizeof(int) * INITIAL_GROUP_LENGTH);
     thread_data->group->length = 0;
@@ -23,6 +21,7 @@ void *thread_func(void *arg) {
     for (int i = 0; i < thread_data->files_quantity; i++)
         read_numbers_from_file(thread_data->file_names[i], thread_data->group);
 
+    clock_t time = clock();
     sort_group(thread_data->group);
     time = clock() - time;
 
