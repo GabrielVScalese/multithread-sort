@@ -25,6 +25,11 @@ input_data *get_input_data(int argc, char *argv[]) {
 void read_numbers_from_file(char *file_name, int_group *group) {
     FILE *file = fopen(file_name, "r");
 
+    if (!file) {
+        printf("Erro: abertura de arquivo de numeros inteiros para leitura\n");
+        exit(EXIT_FAILURE);
+    }
+
     char file_line[MAX_FILE_LINE_LENGTH];
     while (fgets(file_line, MAX_FILE_LINE_LENGTH, file)) {
         int number = atoi(file_line);
@@ -41,6 +46,11 @@ void read_numbers_from_file(char *file_name, int_group *group) {
 
 void write_output_data(int_group *group, char *output_file) {
     FILE *file = fopen(output_file, "w+");
+
+    if (!file) {
+        printf("Erro: escrita de numeros inteiros em arquivo de saida\n");
+        exit(EXIT_FAILURE);
+    }
 
     for (int i = 0; i < group->length; i++)
         if (i != group->length - 1)
