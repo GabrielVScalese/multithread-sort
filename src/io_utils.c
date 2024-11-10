@@ -26,20 +26,11 @@ void read_numbers_from_file(char *file_name, int_group *group) {
     FILE *file = fopen(file_name, "r");
 
     char file_line[MAX_FILE_LINE_LENGTH];
-    int numbers_list_length;
-
-    if (group->length == 0)
-        numbers_list_length = INITIAL_GROUP_LENGTH;
-    else
-        numbers_list_length = group->length;
-
     while (fgets(file_line, MAX_FILE_LINE_LENGTH, file)) {
         int number = atoi(file_line);
 
-        if (group->length == numbers_list_length) {
-            numbers_list_length *= RESIZE_THRESHOLD;
-            group->numbers = realloc(group->numbers, sizeof(int) * numbers_list_length);
-        }
+        if (sizeof(group->numbers) < sizeof(int) * (group->length + 1))
+            group->numbers = realloc(group->numbers, sizeof(int) * group->length * RESIZE_THRESHOLD);
 
         group->numbers[group->length] = number;
         group->length++;

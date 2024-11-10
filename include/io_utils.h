@@ -16,10 +16,10 @@
 /**
  * Numero inicial de elementos de um vetor de inteiros (usado durante leitura de arquivos contendo inteiros)
  */
-#define INITIAL_GROUP_LENGTH 10
+#define INITIAL_GROUP_LENGTH 1000
 
 /**
- * Valor limite para redimencionar vetor de inteiros (usado durante leitura de arquivos contendo inteiros)
+ * Valor limite para redimencionar algum vetor (usado durante leitura de nomes de arquivos e leitura de arquivos contendo inteiros)
  */
 #define RESIZE_THRESHOLD 1.5
 

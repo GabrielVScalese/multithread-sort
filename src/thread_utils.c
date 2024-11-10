@@ -19,7 +19,8 @@ thread_data **create_thread_datas(int files_quantity, char **file_names, int thr
 
         if (sizeof(thread_datas[i]->file_names) < sizeof(char *) * thread_datas[i]->files_quantity + 1)
             thread_datas[i]->file_names = realloc(thread_datas[i]->file_names,
-                                                  sizeof(char *) * (thread_datas[i]->files_quantity + 1));
+                                                  sizeof(char *) * (
+                                                      thread_datas[i]->files_quantity * RESIZE_THRESHOLD));
 
         thread_datas[i]->file_names[thread_datas[i]->files_quantity] = malloc(sizeof(char) * FILE_NAME_LENGTH);
         strcpy(thread_datas[i]->file_names[thread_datas[i]->files_quantity], file_names[j]);
