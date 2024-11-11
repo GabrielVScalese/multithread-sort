@@ -6,6 +6,7 @@
 #include "../include/int_group.h"
 #include "../include/io_utils.h"
 #include "../include/thread_utils.h"
+#include "../include/free_data.h"
 
 /**
  * Cada thread devera ler numeros inteiros de um certo numero de arquivos, ordena-los num grupo de inteiros e calcular/printar tempo gasto para isso
@@ -14,8 +15,19 @@
  */
 void *thread_func(void *arg) {
     thread_data *thread_data = arg;
+    
     thread_data->group = malloc(sizeof(int_group));
+    if (!thread_data->group) {
+        printf("Erro: alocacao de memoria (thread_data->int_group)\n");
+        pthread_exit(NULL);
+    }
+
     thread_data->group->numbers = malloc(sizeof(int) * INITIAL_GROUP_LENGTH);
+    if (!thread_data->group->numbers) {
+        printf("Erro: alocacao de memoria (thread_data->numbers)\n");
+        pthread_exit(NULL);
+    }
+
     thread_data->group->length = 0;
 
     for (int i = 0; i < thread_data->files_quantity; i++)
@@ -24,7 +36,7 @@ void *thread_func(void *arg) {
     clock_t time = clock();
     sort_group(thread_data->group);
     time = clock() - time;
-
+    
     double thread_time = ((double) time / CLOCKS_PER_SEC);
     printf("Tempo de execucao do Thread %i: %f segundos.\n", thread_data->thread_number, thread_time);
     pthread_exit(NULL);
@@ -32,11 +44,6 @@ void *thread_func(void *arg) {
 
 int main(int argc, char *argv[]) {
     input_data *input_data = get_input_data(argc, argv);
-
-    if (input_data->thread_quantity != 2 && input_data->thread_quantity != 4 && input_data->thread_quantity != 8) {
-        printf("Erro: numero de threads invalido\n");
-        exit(EXIT_FAILURE);
-    }
 
     char *output_file = input_data->output_file;
 
@@ -57,17 +64,28 @@ int main(int argc, char *argv[]) {
 
     for (int i = 0; i < threads_to_create_quantity; i++)
         pthread_join(threads[i], NULL);
+    
     time = clock() - time;
 
     double all_threads_time = (double) time / CLOCKS_PER_SEC;
     printf("Tempo total de execucao: %f segundos.\n", all_threads_time);
-
+    
     int_group **joined_thread_groups = malloc(sizeof(int_group *) * threads_to_create_quantity);
+    if (!joined_thread_groups) {
+        printf("Erro: alocacao de memoria (joined_thread_groups)\n");
+        return EXIT_FAILURE;
+    }
+
     for (int i = 0; i < threads_to_create_quantity; i++)
         joined_thread_groups[i] = thread_datas[i]->group;
-
+    
     int_group *sorted_all_groups = merge_groups(joined_thread_groups, threads_to_create_quantity);
     write_output_data(sorted_all_groups, output_file);
+
+    free_input_data(input_data);
+    free_thread_data_double_pointer(thread_datas);
+    free_int_group_double_pointer(joined_thread_groups);
+    free_int_group(sorted_all_groups);
 
     return 0;
 }
