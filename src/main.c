@@ -64,7 +64,12 @@ int main(int argc, char *argv[]) {
 
     for (int i = 0; i < threads_to_create_quantity; i++)
         pthread_join(threads[i], NULL);
+    
+    time = clock() - time;
 
+    double all_threads_time = (double) time / CLOCKS_PER_SEC;
+    printf("Tempo total de execucao: %f segundos.\n", all_threads_time);
+    
     int_group **joined_thread_groups = malloc(sizeof(int_group *) * threads_to_create_quantity);
     if (!joined_thread_groups) {
         printf("Erro: alocacao de memoria (joined_thread_groups)\n");
@@ -73,11 +78,6 @@ int main(int argc, char *argv[]) {
 
     for (int i = 0; i < threads_to_create_quantity; i++)
         joined_thread_groups[i] = thread_datas[i]->group;
-
-    time = clock() - time;
-
-    double all_threads_time = (double) time / CLOCKS_PER_SEC;
-    printf("Tempo total de execucao: %f segundos.\n", all_threads_time);
     
     int_group *sorted_all_groups = merge_groups(joined_thread_groups, threads_to_create_quantity);
     write_output_data(sorted_all_groups, output_file);

@@ -36,10 +36,10 @@ Após a compilação, execute o programa utilizando a seguinte sequência de arg
 
 ```bash
 # Comando para a execução
-./program  2  arq1.txt  -o  saida.txt
+./mergesort  2  arq1.txt  -o  saida.txt
 ```
 Explicação
-- ./program: executável gerado pelo make
-- 2: número de threads a serem utilizadas (pode ser 1, 2, 4 ou 8)
+- ./mergesort: executável gerado pelo make
+- 2: número de threads a serem utilizadas (pode ser 2, 4 ou 8)
 - arq1.txt: arquivos contendo os números para ordenação (pode especificar vários arquivos, separados por espaços)
 - -o  saida.txt: arquivo de saída que conterá os números ordenados
