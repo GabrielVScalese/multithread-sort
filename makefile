@@ -1,7 +1,7 @@
 CC = gcc
 C_FLAGS = -Wall -g
 LD_FLAGS = -pthread
-TARGET = program
+TARGET = mergesort
 OBJS = main.o int_group.o io_utils.o thread_utils.o
 
 all: $(TARGET)
