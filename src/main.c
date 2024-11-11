@@ -32,6 +32,12 @@ void *thread_func(void *arg) {
 
 int main(int argc, char *argv[]) {
     input_data *input_data = get_input_data(argc, argv);
+
+    if (input_data->thread_quantity != 2 && input_data->thread_quantity != 4 && input_data->thread_quantity != 8) {
+        printf("Erro: numero de threads invalido\n");
+        exit(EXIT_FAILURE);
+    }
+
     char *output_file = input_data->output_file;
 
     int threads_to_create_quantity;
