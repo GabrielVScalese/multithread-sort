@@ -1,6 +1,6 @@
 
 # Trabalho Multithread-Sort
-Neste projeto, foi implementada a leitura e ordenação de numeros, utilizando arquivos em C, com múltiplas threads.
+Neste projeto, foi implementada a leitura e ordenação de números, utilizando arquivos em C, com múltiplas threads.
 
 ## Índice
 - [Instalação](#instalação)
@@ -24,7 +24,7 @@ Para utilizar o projeto, primeiro gere os arquivos de entrada. Para criá-los, u
 
  
 ### Compilação
-Compile o código utilizando o makefile (voce deve estar no mesmo diretório onde ele se encontra).
+Compile o código utilizando o makefile (você deve estar no mesmo diretório onde ele se encontra).
 
 ```bash
 # Comando de compilacao
@@ -36,10 +36,10 @@ Após a compilação, execute o programa utilizando a seguinte sequência de arg
 
 ```bash
 # Comando para a execução
-./mergesort  2  arq1.txt  -o  saida.txt
+./mergesort 2 arq1.txt -o saida.txt
 ```
 Explicação
 - ./mergesort: executável gerado pelo make
 - 2: número de threads a serem utilizadas (pode ser 2, 4 ou 8)
 - arq1.txt: arquivos contendo os números para ordenação (pode especificar vários arquivos, separados por espaços)
-- -o  saida.txt: arquivo de saída que conterá os números ordenados
+- -o saida.txt: arquivo de saída que conterá os números ordenados
